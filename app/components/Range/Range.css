@@ -1,0 +1,76 @@
+.range-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.full-range {
+  position: relative;
+  width: 50%;
+  height: 10px;
+  height: 5px;
+  background-color: lightgray;
+}
+
+.range-minHandle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: black;
+  border-radius: 50%;
+  cursor: pointer;
+  top: -6px;
+}
+
+.range-minHandle:hover, .range-maxHandle:hover {
+  transform: scale(1.2);
+  cursor: grab;
+}
+
+
+
+.range-maxHandle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: black;
+  border-radius: 50%;
+  cursor: pointer;
+  top: -6px;
+}
+
+.range-track {
+  position: absolute;
+  height: 5px;
+  background-color: black;
+  top: 1px;
+}
+
+.range-minLabel, .range-maxLabel {
+  font-size: 1.2rem;
+  width: 40px;
+  text-align: center;
+}
+
+body.is-dragging {
+  cursor: grabbing;
+}
+
+body.is-dragging .range-minHandle,
+body.is-dragging .range-maxHandle {
+  cursor: grabbing;
+}
+
+.range-minInput, .range-maxInput {
+  font-size: 1.2rem;
+  text-align: center;
+  border: none;
+  background: none;
+  outline: none;
+  width: 60px;
+  margin: 0;
+  padding: 0;
+}
