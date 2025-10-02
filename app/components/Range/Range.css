@@ -25,12 +25,11 @@
   top: -6px;
 }
 
-.range-minHandle:hover, .range-maxHandle:hover {
+.range-minHandle:hover,
+.range-maxHandle:hover {
   transform: scale(1.2);
   cursor: grab;
 }
-
-
 
 .range-maxHandle {
   position: absolute;
@@ -49,10 +48,14 @@
   top: 1px;
 }
 
-.range-minLabel, .range-maxLabel {
+.range-minLabel,
+.range-maxLabel {
   font-size: 1.2rem;
   width: 70px;
   text-align: center;
+  @media (max-width: 500px) {
+    width: 30px;
+  }
 }
 
 body.is-dragging {
@@ -64,7 +67,8 @@ body.is-dragging .range-maxHandle {
   cursor: grabbing;
 }
 
-.range-minInput, .range-maxInput {
+.range-minInput,
+.range-maxInput {
   font-size: 1.2rem;
   text-align: center;
   border: none;
@@ -73,4 +77,8 @@ body.is-dragging .range-maxHandle {
   width: 70px;
   margin: 0;
   padding: 0;
+
+  @media (max-width: 500px) {
+    width: 30px;
+  }
 }
