@@ -1,4 +1,4 @@
-# Technical test Mango
+# Technical Test Mango
 
 ## Getting Started
 
@@ -21,7 +21,7 @@ You can add a .env file with a NEXT_PUBLIC_BASE_URL and PORT. But the app should
 
 1.  Run the App:
     ```bash
-    npm install
+    npm run dev
     ```
 
 2.  Run the tests:
