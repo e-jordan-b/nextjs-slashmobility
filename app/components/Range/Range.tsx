@@ -1,35 +1,44 @@
 'use client'
-import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { RangeProps } from './RangeProps';
-import './Range.css';
+import React, { useState, useRef, useCallback } from 'react'
+import { RangeProps } from './RangeProps'
+import './Range.css'
 
-export default function Range({min, max}: Readonly<RangeProps>) {
+export default function Range({min, max, steps}: Readonly<RangeProps>) {
+  const isStepped = steps && steps.length > 0
+
   const [minRange, setMinRange] = useState(min)
   const [maxRange, setMaxRange] = useState(max)
-  const [minInputValue, setMinInputValue] = useState(min)
-  const [maxInputValue, setMaxInputValue] = useState(max)
+  const [minInputValue, setMinInputValue] = useState<string>(String(min))
+  const [maxInputValue, setMaxInputValue] = useState<string>(String(max))
   const [editingTarget, setEditingTarget] = useState<'min' | 'max' | null>(null)
 
-  const trackRef = useRef<HTMLDivElement>(null); 
+  const trackRef = useRef<HTMLDivElement>(null) 
   const activeHandleRef = useRef<'min' | 'max' | null>(null)
 
   const getClientX = (event: MouseEvent | TouchEvent) => {
     if (event instanceof TouchEvent) {
-      return event.touches[0].clientX;
+      return event.touches[0].clientX
     }
     return event.clientX
   }
-
-  const roundToPrecision = (num: number, precision: number = 2): number => {
-    const factor = Math.pow(10, precision);
-    return Math.round(num * factor) / factor;
-  };
-
 
   const calcPercentage = useCallback((value: number) => {
     if(min === max) return 0
     return ((value - min) / (max - min)) * 100
   }, [min, max])
+
+  const findClosestValue = useCallback((value: number, steps: number[]) => {
+    return steps.reduce((prev, curr) =>
+      Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev)
+  }, [])
+
+  const getNewValue = useCallback((value: number) => {
+    if (isStepped) {
+      return findClosestValue(value, steps)
+    }
+    
+    return Math.round((value) * 100) / 100
+  }, [min, max, isStepped, steps, findClosestValue])
 
   const handleMouseMove = useCallback((event: MouseEvent) => {
     if(!trackRef.current || !activeHandleRef.current) return
@@ -41,16 +50,16 @@ export default function Range({min, max}: Readonly<RangeProps>) {
     const mousePosX = getClientX(event)
     const relativeX = Math.max(0, Math.min(mousePosX - trackLeft, trackWidth))
     const percentage = (relativeX / trackWidth)
-    const newValue = roundToPrecision(min + percentage * (max - min))
+    const newValue = getNewValue(min + percentage * (max - min))
 
     if (activeHandleRef.current === 'min') {
     const dragValue = Math.min(newValue, maxRange)
     setMinRange(dragValue)
-    setMinInputValue(dragValue)
+    setMinInputValue(String(dragValue))
   } else {
     const dragValue = Math.max(newValue, minRange)
     setMaxRange(dragValue)
-    setMaxInputValue(dragValue)
+    setMaxInputValue(String(dragValue))
   }
     }, [min, max, minRange, maxRange])
 
@@ -65,22 +74,15 @@ export default function Range({min, max}: Readonly<RangeProps>) {
   }, [handleMouseMove])
 
   const handleMouseDown = useCallback((event: React.MouseEvent | React.TouchEvent, handleType: 'min' | 'max') => {
-    event.preventDefault();
+    event.preventDefault()
 
-    activeHandleRef.current = handleType;
+    activeHandleRef.current = handleType
     document.body.classList.add('is-dragging')
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove)
     window.addEventListener('touchmove', handleMouseMove)
-    window.addEventListener('mouseup', handleMouseUp);
-    window.removeEventListener('touchend', handleMouseUp)
+    window.addEventListener('mouseup', handleMouseUp)
+    window.addEventListener('touchend', handleMouseUp)
   }, [handleMouseMove, handleMouseUp])
-
-  useEffect(() => {
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    window.removeEventListener('mouseup', handleMouseUp)
-    };
-  }, []);
 
   const handleLabelClick = (target: 'min' | 'max') => {
     setEditingTarget(target)
@@ -120,27 +122,24 @@ export default function Range({min, max}: Readonly<RangeProps>) {
 
      if (value === '') {
       if (editingTarget === 'min') {
-        setMinInputValue('');
-        return;
+        setMinInputValue('')
       } else {
-        setMaxInputValue('');
-        return;
+        setMaxInputValue('')
       }
     }
 
     if (numericValue >= min && numericValue <= max) {
       if (editingTarget === 'min') {
-        setMinInputValue(numericValue);
+        setMinInputValue(String(numericValue))
       } else {
-        setMaxInputValue(numericValue);
+        setMaxInputValue(String(numericValue))
       }
     }
-
   }
-
+  
   return (
     <div className='range-container'>
-      { editingTarget === 'min' ? (
+      { !isStepped && editingTarget === 'min' ? (
       <input
         type='number'
         value={minInputValue}
@@ -153,7 +152,7 @@ export default function Range({min, max}: Readonly<RangeProps>) {
       <span 
         className='range-minLabel'
         onClick={() => handleLabelClick('min')}>
-        {minRange} €
+        {minRange}
       </span>)}
       <div className='full-range' ref={trackRef}>
         <div
@@ -166,7 +165,11 @@ export default function Range({min, max}: Readonly<RangeProps>) {
           onMouseDown={(e) => handleMouseDown(e, 'min')}
           onTouchStart={(e) => handleMouseDown(e, 'min')}
           role="slider"
-          >
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={minRange}
+          aria-label='Minimum value'
+        >
         </div>
         <div
           className='range-maxHandle'
@@ -174,10 +177,14 @@ export default function Range({min, max}: Readonly<RangeProps>) {
           onMouseDown={(e) => handleMouseDown(e, 'max')}
           onTouchStart={(e) => handleMouseDown(e, 'max')}
           role="slider"
+          aria-valuemin={min}
+          aria-valuemax={max}
+          aria-valuenow={maxRange}
+          aria-label='Maximum value'
         >
         </div>
       </div>
-      { editingTarget === 'max' ? (
+      { !isStepped && editingTarget === 'max' ? (
       <input
         type='number'
         value={maxInputValue}
@@ -189,7 +196,7 @@ export default function Range({min, max}: Readonly<RangeProps>) {
       />) : (
       <span className='range-maxLabel'
         onClick={() => handleLabelClick('max')}>
-        {maxRange} €
+        {maxRange}
       </span>)}
     </div>
   )

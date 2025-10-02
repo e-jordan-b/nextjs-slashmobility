@@ -51,7 +51,7 @@
 
 .range-minLabel, .range-maxLabel {
   font-size: 1.2rem;
-  width: 40px;
+  width: 70px;
   text-align: center;
 }
 
@@ -70,7 +70,7 @@ body.is-dragging .range-maxHandle {
   border: none;
   background: none;
   outline: none;
-  width: 60px;
+  width: 70px;
   margin: 0;
   padding: 0;
 }
