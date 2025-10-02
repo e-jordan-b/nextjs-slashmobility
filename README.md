@@ -26,5 +26,5 @@ You can add a .env file with a NEXT_PUBLIC_BASE_URL and PORT. But the app should
 
 2.  Run the tests:
     ```bash
-    npm run tests
+    npm run test
     ```
