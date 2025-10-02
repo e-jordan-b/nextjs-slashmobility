@@ -4,7 +4,7 @@
 
 1.  Clone the repository:
     ```bash
-    git clone 
+    git clone https://github.com/e-jordan-b/nextjs-mango.git
     ```
 2.  Navigate to the project directory:
     ```bash
@@ -19,14 +19,12 @@ You can add a .env file with a NEXT_PUBLIC_BASE_URL and PORT. But the app should
 
 ### Running the app
 
-To run the app:
+1.  Run the App:
+    ```bash
+    npm install
+    ```
 
-``bash
-npm run dev
-```
-
-To run the tests:
-
-``bash
-npm run test
-```
+2.  Run the tests:
+    ```bash
+    npm run tests
+    ```
