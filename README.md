@@ -1,14 +1,14 @@
-# Technical Test Mango
+# Technical Test slashmobility
 
 ## Getting Started
 
 1.  Clone the repository:
     ```bash
-    git clone https://github.com/e-jordan-b/nextjs-mango.git
+    git clone https://github.com/e-jordan-b/nextjs-slashmobility.git
     ```
 2.  Navigate to the project directory:
     ```bash
-    cd nextjs-mango
+    cd nextjs-slashmobility
     ```
 3.  Install the dependencies:
     ```bash
